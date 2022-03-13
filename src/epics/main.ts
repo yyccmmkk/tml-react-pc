@@ -8,46 +8,22 @@ import { _http } from "../http.service";
 
 import { actions } from "../redux/actions";
 
-const { demoActionType, updateErrInfo } = actions;
+const { updateAsyncData, updateErrInfo, asyncActionType } = actions;
 
 export const demoEpic = (action$: any, state$: any) =>
   action$.pipe(
-    ofType(demoActionType),
+    ofType(asyncActionType),
     mergeMap((action: any) => {
-      const { warehouseId } = state$.value.map.main;
-      return _http.post("/tms/delivery-group/warehouse-eff-group-visual", {
-        warehouseId: action.value,
+      const { token } = state$.value.main;
+      return _http.post("/async/action", {
+        actionPayload: action.payload,
+        token
       }).pipe(
         map(({ response: { code, msg, data } }: any) => {
           if (code !== 0) {
             throw Error(msg);
           }
-          return demoActionType(['demo ']);
-        }),
-        catchError(({ message: err }: any) => {
-          message.error(err);
-          return of(updateErrInfo(err));
-        })
-      );
-    }),
-    catchError(({ message: err }: any) => {
-      message.error(err);
-      return of(updateErrInfo(err));
-    })
-  );
-export const demoEpic2 = (action$: any, state$: any) =>
-  action$.pipe(
-    ofType(demoActionType),
-    mergeMap((action: any) => {
-      const { warehouseId } = state$.value.map.main;
-      return _http.post("/tms/delivery-group/warehouse-eff-group-visual", {
-        warehouseId: action.value,
-      }).pipe(
-        map(({ response: { code, msg, data } }: any) => {
-          if (code !== 0) {
-            throw Error(msg);
-          }
-          return demoActionType(['demo ']);
+          return updateAsyncData(['async result ']);
         }),
         catchError(({ message: err }: any) => {
           message.error(err);

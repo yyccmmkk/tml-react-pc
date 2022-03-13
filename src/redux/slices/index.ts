@@ -7,15 +7,22 @@ const initialState: State = { // 会被 preloadedState 覆盖
   value: 0,
   demo: 3,
   asyncData: [],
-  errorInfo: ''
+  errorInfo: '',
+  token: 'token'
 }
 
 export const counterSlice = createSlice({
   name: 'main',
   initialState,
   reducers: {
-    demoActionType: (state,action) => {
-      state.asyncData =  action.payload
+    asyncActionType:(state)=>{
+
+    },
+    updateToken: (state, action) => {
+      state.token = action.payload;
+    },
+    updateAsyncData: (state,action) => {
+      state.asyncData =  action.payload;
     },
     updateErrInfo: (state, action) => {
       state.errorInfo = action.payload;

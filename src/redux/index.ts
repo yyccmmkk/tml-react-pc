@@ -38,7 +38,7 @@ const store = configureStore({
     return middlewares
   },
   devTools: process.env.NODE_ENV !== 'production',
-  preloadedState, // 会覆盖 reducer initialState
+  //preloadedState, // 会覆盖 reducer initialState
   enhancers: [applyMiddleware(epicMiddleware)] // [reduxBatch],
 });
 
