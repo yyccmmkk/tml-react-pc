@@ -75,7 +75,7 @@ for (const v of [instance]) {
         alert('登录过期,请重新登录')
         sessionStorage.clear()
         setTimeout(() => {
-          location.href = '/login'
+          window.location.href = '/login'
           sessionStorage.clear()
         }, 2000)
       }
