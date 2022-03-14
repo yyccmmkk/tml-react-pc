@@ -32,7 +32,8 @@
     "start": "craco  start",
     "build": "craco  build",
     "test": "craco  test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "release": "standard-version"
   },
   "eslintConfig": {
     "extends": [
@@ -54,6 +55,7 @@
   },
   "devDependencies": {
     "@types/redux-logger": "^3.0.9",
-    "redux-logger": "^3.0.6"
+    "redux-logger": "^3.0.6",
+    "standard-version": "^9.3.2"
   }
 }
