@@ -1,12 +1,10 @@
-import { of } from "rxjs";
-import { mergeMap, map, catchError, finalize } from "rxjs/operators";
-import { ofType } from "redux-observable";
-import { message } from "antd";
-import { _http } from "../http.service";
+import { of } from 'rxjs';
+import { mergeMap, map, catchError, finalize } from 'rxjs/operators';
+import { ofType } from 'redux-observable';
+import { message } from 'antd';
+import { _http } from '../http.service';
 
-
-
-import { actions } from "../redux/actions";
+import { actions } from '../redux/actions';
 
 const { updateAsyncData, updateErrInfo, asyncActionType } = actions;
 
@@ -15,7 +13,7 @@ export const demoEpic = (action$: any, state$: any) =>
     ofType(asyncActionType),
     mergeMap((action: any) => {
       const { token } = state$.value.main;
-      return _http.post("/async/action", {
+      return _http.post('/async/action', {
         actionPayload: action.payload,
         token
       }).pipe(
@@ -252,4 +250,4 @@ export const getMarkerDataEpic = (action$: any, state$: any) =>
       message.error(err);
       return of(Actions.updateErrFetch(err));
     })
-  );*/
+  ); */

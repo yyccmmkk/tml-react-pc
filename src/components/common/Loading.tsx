@@ -6,22 +6,22 @@ import React from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 
-import './Loading.css'
+import './Loading.css';
 
 const antIcon = <LoadingOutlined style={{ fontSize: 100 }} spin />;
 
 export class Loading extends React.Component {
-    props: any;
+  props: any;
 
-    render() {
-        const {isLoading} = this.props;
-        return (
-            isLoading ?
-                <div className='loading'>
+  render () {
+    const { isLoading } = this.props;
+    return (
+      isLoading
+        ? <div className='loading'>
                     <Spin indicator={antIcon} />
                     <span className={'text'}>加载中...</span>
                 </div>
-                : null
-        )
-    }
+        : null
+    );
+  }
 }
