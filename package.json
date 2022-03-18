@@ -36,7 +36,7 @@
     "test": "craco  test",
     "eject": "react-scripts eject",
     "release": "standard-version",
-    "eslint": "npx eslint src/** --ext .ts,.tsx  --fix prettier --write",
+    "eslint": "npx eslint --ext .ts,.tsx,.js,.jsx src/  --fix ",
     "prepare": "husky install"
   },
   "eslintConfig": {
