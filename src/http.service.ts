@@ -2,9 +2,9 @@ import { ajax } from 'rxjs/ajax';
 import { of, race } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-const baseURL: string = process.env.APP_BASE_URL || ''; // 上传接口 baseUrl
+const baseURL: string = process.env.REACT_APP_BASE_URL || ''; // 上传接口 baseUrl
 const regExp = /\/index\/(.+)\/?/;
-const basePath = process.env.APP_BASE_PATH; // 路由
+const basePath = process.env.REACT_APP_BASE_PATH; // 路由
 const urlRegExp = /demo/;
 const axios = require('axios');
 
@@ -20,31 +20,30 @@ const instance = axios.create({
   baseURL,
   timeout: 50000,
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/json;charset=UTF-8',
   },
   transformRequest: [
     function (data: any = {}, headers: any) {
       // Do whatever you want to transform the data
-      const temp = Object.keys(data).map(v => `${v}=${data[v]}`);
+      const temp = Object.keys(data).map((v) => `${v}=${data[v]}`);
       Object.assign(
         headers.common,
         !isLogin
           ? {
-              id: sessionStorage.getItem('biw-id'), // todo 禁止修改
-              tk: sessionStorage.getItem('biw-tk'), // todo 禁止修改
-              platform: !isVc ? 'in' : 'out'
+              id: sessionStorage.getItem('biw-id'),
+              platform: !isVc ? 'in' : 'out',
             }
           : undefined
       );
       return temp.join('&');
-    }
-  ]
+    },
+  ],
 });
 
 //
 for (const v of [instance]) {
   v.interceptors.request.use(
-    process.env.APP_API_ENV === 'local'
+    process.env.REACT_APP_API_ENV === 'local'
       ? (config: any) => {
           const { url, baseURL } = config;
           // Do something before request is sent
@@ -52,7 +51,7 @@ for (const v of [instance]) {
           const match = url.match(urlRegExp);
           if (match) {
             config.baseURL =
-            match[1] === 'ofc' ? `${baseURL}:30210` : `${baseURL}:30250`;
+              match[1] === 'ofc' ? `${baseURL}:30210` : `${baseURL}:30250`;
           }
           return config;
         }
@@ -87,16 +86,16 @@ for (const v of [instance]) {
 }
 
 // eslint-disable-next-line
-class _http {  // _http  配合 rxjs 流式操作
+class _http {
+  // _http  配合 rxjs 流式操作
   static cache: any = { source: { url: '', data: null, baseURL } };
 
   static interceptors: any = {
     // eslint-disable-next-line
-    beforeRequest(source: { url: string; data: any; baseURL: string }) {
-    }
+    beforeRequest(source: { url: string; data: any; baseURL: string }) {},
   };
 
-  static post (url: string, data: any) {
+  static post(url: string, data: any) {
     const cache = _http.cache;
     cache.source = { url, data, baseURL };
     _http.interceptors.beforeRequest(_http.cache.source);
@@ -109,8 +108,8 @@ class _http {  // _http  配合 rxjs 流式操作
         body: data,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
-          token
-        }
+          token,
+        },
       })
     );
   }
@@ -136,9 +135,9 @@ if (process.env.APP_API_ENV === 'local') {
     }
   );
   _http.interceptors.beforeRequest = (source: {
-    url: string
-    data: any
-    baseURL: string
+    url: string;
+    data: any;
+    baseURL: string;
   }) => {
     const { url } = source;
     const match = url.match(urlRegExp);
