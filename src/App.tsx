@@ -1,7 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.less';
-import { ConfigProvider, Button, DatePicker } from 'antd';
+import { ConfigProvider } from 'antd';
 import { Router } from './components/common/Router';
 import { Routes, Route } from 'react-router-dom';
 
@@ -13,17 +12,14 @@ import { container as Home } from './components/Home';
 
 moment.locale('zh-cn');
 
-function App () {
+function App() {
   return (
-
     <ConfigProvider locale={zhCN}>
       <div className="App">
         <Router>
           <Routes>
-            <Route path="/home" element={ <Home /> }>
-            </Route>
-            <Route path="/index/:token" element={ <Home /> }>
-            </Route>
+            <Route path="/home" element={<Home />}></Route>
+            <Route path="/index/:token" element={<Home />}></Route>
             <Route
               path="*"
               element={
@@ -36,7 +32,6 @@ function App () {
         </Router>
       </div>
     </ConfigProvider>
-
   );
 }
 

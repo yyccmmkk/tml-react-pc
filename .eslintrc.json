@@ -20,7 +20,8 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "semi": ["error", "always"]
+    "semi": ["warn", "always"],
+    "react/no-unescaped-entities": ["warn"]
   },
   "settings": {
     "react": {
