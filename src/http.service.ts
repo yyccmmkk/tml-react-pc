@@ -1,41 +1,31 @@
 import { ajax } from 'rxjs/ajax';
 import { of, race } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
+import Cookies from 'js-cookie';
+import { encryption, decrypt } from './utils';
 
-const baseURL: string = process.env.REACT_APP_BASE_URL || ''; // 上传接口 baseUrl
+const win: any = window;
+const baseURL: string = process.env.REACT_APP_BASE_URL || '';
+const basePath: string = process.env.REACT_APP_BASE_PATH || '';
 const regExp = /\/index\/(.+)\/?/;
-const basePath = process.env.REACT_APP_BASE_PATH; // 路由
 const urlRegExp = /demo/;
-const axios = require('axios');
+const aTokenRegExp = /\/adminToken(?=\/)/;
+const cTokenRegExp = /\/cacToken(?=\/)/;
+const noTokenRegExp = /\/noToken(?=\/)/;
+const isEncrypt = process.env.REACT_APP_OPEN_ENCRYPTION === 'true';
 
-const vcRegExp = /\/(vcUse)\//; // todo demo vc add regexp
-let isVc = false;
-let isLogin = false;
-const loginRegExp = /\/login$/;
-const match = window.location.href.match(regExp);
-
-const token = sessionStorage.getItem('token') || (match && match[1]) || null;
+import axios from 'axios';
 
 const instance = axios.create({
   baseURL,
-  timeout: 50000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
   },
   transformRequest: [
     function (data: any = {}, headers: any) {
-      // Do whatever you want to transform the data
-      const temp = Object.keys(data).map((v) => `${v}=${data[v]}`);
-      Object.assign(
-        headers.common,
-        !isLogin
-          ? {
-              id: sessionStorage.getItem('biw-id'),
-              platform: !isVc ? 'in' : 'out',
-            }
-          : undefined
-      );
-      return temp.join('&');
+      //console.log('request::', data);
+      return isEncrypt ? encryption(data) : JSON.stringify(data);
     },
   ],
 });
@@ -56,9 +46,23 @@ for (const v of [instance]) {
           return config;
         }
       : (config: any) => {
-          isLogin = loginRegExp.test(window.location.href);
-          isVc = vcRegExp.test(config.url);
-          config.url = config.url.replace(vcRegExp, '/');
+          const { headers } = config;
+          const token = sessionStorage.getItem('token');
+          const adminToken = Cookies.get('Admin-Token') || undefined;
+          const isAToken = aTokenRegExp.test(config.url);
+          const isCToken = cTokenRegExp.test(config.url);
+          const isNoToken = noTokenRegExp.test(config.url);
+          const bearer = isCToken ? 'bearer' : 'Bearer';
+          Object.assign(
+            headers.common,
+            !isNoToken
+              ? { Authorization: `${bearer} ${isCToken ? token : adminToken}` }
+              : {}
+          );
+          config.url = config.url
+            .replace(noTokenRegExp, '')
+            .replace(aTokenRegExp, '')
+            .replace(cTokenRegExp, '');
           return config;
         },
     (error: any) => {
@@ -69,14 +73,10 @@ for (const v of [instance]) {
   v.interceptors.response.use(
     (response: any) => {
       // 对响应数据做点什么
-      if (response.data.code === 50010) {
-        alert('登录过期,请重新登录');
-        sessionStorage.clear();
-        setTimeout(() => {
-          window.location.href = '/login';
-          sessionStorage.clear();
-        }, 2000);
+      if (isEncrypt) {
+        response.data = decrypt(response.data);
       }
+      //console.log(response.data);
       return response;
     },
     (error: any) => {
@@ -88,29 +88,61 @@ for (const v of [instance]) {
 // eslint-disable-next-line
 class _http {
   // _http  配合 rxjs 流式操作
-  static cache: any = { source: { url: '', data: null, baseURL } };
+  static cache: any = {
+    source: {
+      url: '',
+      data: null,
+      baseURL,
+    },
+  };
 
   static interceptors: any = {
     // eslint-disable-next-line
-    beforeRequest(source: { url: string; data: any; baseURL: string }) {},
+    beforeRequest(source: { url: string; data: any; baseURL: string }) {
+      if (isEncrypt) {
+        source.data = encryption(source.data);
+      }
+    },
   };
 
   static post(url: string, data: any) {
+    return _http.fetch(url, data);
+  }
+
+  static get(url: string, data: any) {
+    return _http.fetch(url, data, 'GET');
+  }
+
+  static fetch(url: string, data: any, method = 'POST', async = true) {
     const cache = _http.cache;
-    cache.source = { url, data, baseURL };
-    _http.interceptors.beforeRequest(_http.cache.source);
+    cache.request = {
+      url,
+      data,
+      baseURL,
+    };
+    _http.interceptors.beforeRequest(_http.cache.request);
     return race(
-      of({ code: 408, msg: '请求超时！' }).pipe(delay(50000)),
+      of({
+        code: 408,
+        msg: '请求超时！',
+      }).pipe(delay(50000)),
       ajax({
-        url: `${baseURL}${url}`,
-        method: 'POST',
-        async: true,
-        body: data,
+        url: `${cache.request.baseURL}${cache.request.url}`,
+        method,
+        async,
+        body: cache.request.data,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
-          token,
+          token: sessionStorage.getItem('access_token'),
         },
-      })
+      }).pipe(
+        map((rs) => {
+          if (isEncrypt) {
+            return { ...rs, response: decrypt(rs.response as string) };
+          }
+          return rs;
+        })
+      )
     );
   }
 }

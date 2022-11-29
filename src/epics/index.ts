@@ -1,10 +1,8 @@
 import { combineEpics } from 'redux-observable';
 import { catchError } from 'rxjs/operators';
-import {
-  demoEpic
-} from './main';
+import { demoEpic } from './main';
 
-export const rootEpic = (action$:any, store$:any, dependencies:any) =>
+export const rootEpic = (action$: any, store$: any, dependencies: any) =>
   combineEpics(demoEpic)(action$, store$, dependencies).pipe(
     catchError((error, source) => {
       console.error(error);

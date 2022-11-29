@@ -1,5 +1,6 @@
 build/*
 dist/*
+mock-server/*
 *.css
 *.less
 *.svg

@@ -4,8 +4,9 @@
     "es2021": true
   },
   "extends": [
+    "eslint:recommended",
     "plugin:react/recommended",
-    "standard"
+    "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -20,12 +21,8 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "semi": ["warn", "always"],
-    "react/no-unescaped-entities": ["warn"]
-  },
-  "settings": {
-    "react": {
-      "version": "17.0"
-    }
+    "no-debugger": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "no-mixed-spaces-and-tabs": "off"
   }
 }

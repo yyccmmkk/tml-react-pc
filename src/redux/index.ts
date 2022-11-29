@@ -1,49 +1,64 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { createEpicMiddleware } from 'redux-observable';
-import { rootEpic } from '../epics';
-import { applyMiddleware, compose } from 'redux';
 import mainReducer from './slices';
+import { configureStore } from '@reduxjs/toolkit';
+import { applyMiddleware, combineReducers } from 'redux';
+import { rootEpic } from '../epics';
+import { createEpicMiddleware } from 'redux-observable';
 
-// @ts-ignore
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+import { createStore } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // def
+
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const reducer = {
+  main: mainReducer,
+};
+
+const persistedReducer = persistReducer(
+  persistConfig,
+  combineReducers(reducer)
+);
+
+const preloadedState = {};
 
 const epicMiddleware = createEpicMiddleware();
 
-// We'll use redux-logger just as an example of adding another middleware
-// import logger from 'redux-logger';
-
-// And use redux-batch as an example of adding enhancers
-// import { reduxBatch } from '@manaflair/redux-batch';
-
-const reducer = {
-  main: mainReducer
-
-};
-
-const preloadedState = {
-  main: { b: 4 }
-};
-
 const store = configureStore({
-  reducer,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) => {
-    const middlewares: any[] = [...getDefaultMiddleware()];
+    const middlewares: any[] = [
+      ...getDefaultMiddleware({
+        serializableCheck: {
+          // Ignore these action types
+          ignoredActions: ['persist/PERSIST'],
+          // Ignore these field paths in all actions
+          ignoredActionPaths: ['meta.arg', 'payload.timestamp'],
+          // Ignore these paths in the state
+          ignoredPaths: ['items.dates'],
+        },
+      }),
+    ];
     if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { logger } = require('redux-logger');
       middlewares.push(logger);
     }
     return middlewares;
   },
   devTools: process.env.NODE_ENV !== 'production',
-  // preloadedState, // 会覆盖 reducer initialState
-  enhancers: [applyMiddleware(epicMiddleware)] // [reduxBatch],
+  preloadedState,
+  enhancers: [applyMiddleware(epicMiddleware)],
 });
-
 epicMiddleware.run(rootEpic);
 
-export { store };
 // The store has been created with these options:
 // - The slice reducers were automatically passed to combineReducers()
 // - redux-thunk and redux-logger were added as middleware
 // - The Redux DevTools Extension is disabled for production
-// - The middleware, batch, and devtools enhancers were composed together
+// - The middleware, batched subscribe, and devtools enhancers were composed together
+export default store;
+export { store };
+export const persistor = persistStore(store);
