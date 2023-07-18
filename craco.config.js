@@ -11,6 +11,14 @@ module.exports = {
           runtimeErrors: false,
         },
       },
+      proxy: {
+        ['/local']: {
+          target: 'http://192.168.44.22:8888',
+          pathRewrite: { '^/local': '' },
+          changeOrigin: true,
+          secure: false,
+        },
+      },
     });
     return devServerConfig;
   },
