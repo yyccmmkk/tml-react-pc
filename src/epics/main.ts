@@ -43,3 +43,4 @@ export const demoEpic = (action$: any, state$: any) =>
       return of(updateErrInfo(err));
     })
   );
+export const epics = [demoEpic];
