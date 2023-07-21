@@ -1,5 +1,5 @@
 {
-  "name": "tang-pc-metting",
+  "name": "react-template-pc",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
@@ -57,7 +57,7 @@
   "browserslist": {
     "production": [
       ">0.2%",
-      "not dead",
+      "chrome 75",
       "not op_mini all"
     ],
     "development": [

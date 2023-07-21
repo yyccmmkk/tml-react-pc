@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { encryption, decrypt } from './utils';
 
 const win: any = window;
-const baseURL: string = process.env.REACT_APP_BASE_URL || '';
+const baseURL: string = process.env.REACT_APP_BASE_URL || win.location.origin;
 const basePath: string = process.env.REACT_APP_BASE_PATH || '';
 const regExp = /\/index\/(.+)\/?/;
 const urlRegExp = /demo/;
@@ -13,19 +13,25 @@ const aTokenRegExp = /\/adminToken(?=\/)/;
 const cTokenRegExp = /\/cacToken(?=\/)/;
 const noTokenRegExp = /\/noToken(?=\/)/;
 const isEncrypt = process.env.REACT_APP_OPEN_ENCRYPTION === 'true';
+const httpTimeout = 60000;
 
 import axios from 'axios';
 
 const instance = axios.create({
   baseURL,
-  timeout: 60000,
+  timeout: httpTimeout,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
+    //'Content-Type': 'application/x-www-form-urlencoded',
   },
   transformRequest: [
     function (data: any = {}, headers: any) {
       //console.log('request::', data);
-      return isEncrypt ? encryption(data) : JSON.stringify(data);
+      return isEncrypt
+        ? encryption(data)
+        : typeof data === 'string'
+        ? data
+        : JSON.stringify(data); // todo h5
     },
   ],
 });
@@ -33,38 +39,27 @@ const instance = axios.create({
 //
 for (const v of [instance]) {
   v.interceptors.request.use(
-    process.env.REACT_APP_API_ENV === 'local'
-      ? (config: any) => {
-          const { url, baseURL } = config;
-          // Do something before request is sent
-          config.url = url.replace(urlRegExp, '');
-          const match = url.match(urlRegExp);
-          if (match) {
-            config.baseURL =
-              match[1] === 'ofc' ? `${baseURL}:30210` : `${baseURL}:30250`;
-          }
-          return config;
-        }
-      : (config: any) => {
-          const { headers } = config;
-          const token = sessionStorage.getItem('token');
-          const adminToken = Cookies.get('Admin-Token') || undefined;
-          const isAToken = aTokenRegExp.test(config.url);
-          const isCToken = cTokenRegExp.test(config.url);
-          const isNoToken = noTokenRegExp.test(config.url);
-          const bearer = isCToken ? 'bearer' : 'Bearer';
-          Object.assign(
-            headers.common,
-            !isNoToken
-              ? { Authorization: `${bearer} ${isCToken ? token : adminToken}` }
-              : {}
-          );
-          config.url = config.url
-            .replace(noTokenRegExp, '')
-            .replace(aTokenRegExp, '')
-            .replace(cTokenRegExp, '');
-          return config;
-        },
+    (config: any) => {
+      const { headers } = config;
+      const token = localStorage.getItem('access_token');
+      const adminToken = Cookies.get('Admin-Token') || undefined;
+      const isAToken = aTokenRegExp.test(config.url);
+      const isCToken = true; //cTokenRegExp.test(config.url);
+      const isNoToken = noTokenRegExp.test(config.url);
+      const bearer = isCToken ? 'bearer' : 'Bearer';
+      //console.log(headers, ' ::headers');
+      Object.assign(
+        headers.common,
+        !isNoToken
+          ? { Authorization: `${bearer} ${isCToken ? token : adminToken}` }
+          : {}
+      );
+      config.url = config.url
+        .replace(noTokenRegExp, '')
+        .replace(aTokenRegExp, '')
+        .replace(cTokenRegExp, '');
+      return config;
+    },
     (error: any) => {
       // Do something with request error
       return Promise.reject(error);
@@ -109,7 +104,7 @@ class _http {
     return _http.fetch(url, data);
   }
 
-  static get(url: string, data: any) {
+  static get(url: string, data?: any) {
     return _http.fetch(url, data, 'GET');
   }
 
@@ -121,19 +116,27 @@ class _http {
       baseURL,
     };
     _http.interceptors.beforeRequest(_http.cache.request);
+    let params = '';
+    if (method === 'GET' && typeof data === 'object' && data !== null) {
+      params = Object.entries(data).reduce(
+        (acc, cur) => acc + cur.join('='),
+        ''
+      );
+    }
     return race(
       of({
         code: 408,
         msg: '请求超时！',
-      }).pipe(delay(50000)),
+      }).pipe(delay(httpTimeout)),
       ajax({
         url: `${cache.request.baseURL}${cache.request.url}`,
         method,
         async,
         body: cache.request.data,
+        queryParams: params,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
-          token: sessionStorage.getItem('access_token'),
+          Authorization: `bearer ${localStorage.getItem('access_token')}`,
         },
       }).pipe(
         map((rs) => {
@@ -145,39 +148,6 @@ class _http {
       )
     );
   }
-}
-
-// 本地联调时，不需要tms ofc
-if (process.env.APP_API_ENV === 'local') {
-  instance.interceptors.request.use(
-    (config: any) => {
-      const { url, baseURL } = config;
-      // Do something before request is sent
-      config.url = url.replace(urlRegExp, '');
-      const match = url.match(urlRegExp);
-      if (match) {
-        config.baseURL =
-          match[1] === 'ofc' ? `${baseURL}:30210` : `${baseURL}:30250`;
-      }
-      return config;
-    },
-    (error: any) => {
-      // Do something with request error
-      return Promise.reject(error);
-    }
-  );
-  _http.interceptors.beforeRequest = (source: {
-    url: string;
-    data: any;
-    baseURL: string;
-  }) => {
-    const { url } = source;
-    const match = url.match(urlRegExp);
-    if (match) {
-      const temp = match[1] === 'tms' ? ':30250' : ':30210';
-      source.url = url.replace(urlRegExp, temp);
-    }
-  };
 }
 
 export default instance;
