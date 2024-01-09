@@ -21,6 +21,7 @@
     "craco-less": "^2.0.0",
     "echarts": "^5.3.3",
     "encryptlong": "^3.1.4",
+    "eslint-import-resolver-alias": "^1.1.2",
     "js-cookie": "^3.0.1",
     "jsencrypt": "^3.2.1",
     "lodash-es": "^4.17.21",
@@ -36,6 +37,7 @@
     "redux-observable": "^2.0.0",
     "redux-persist": "^6.0.0",
     "rxjs": "^7.5.6",
+    "sass": "^1.69.7",
     "standard-version": "^9.5.0",
     "typescript": "^4.8.2",
     "web-vitals": "^2.1.4"

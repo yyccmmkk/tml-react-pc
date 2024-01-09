@@ -1,4 +1,12 @@
 {
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [["@", "./src"],["@c", "./src/components"],["@s", "./src/redux/slices"],["@x", "./src/redux"],["@u", "./src/utils"],["@r", "./src/router"]],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
   "env": {
     "browser": true,
     "es2021": true

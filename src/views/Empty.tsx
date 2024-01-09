@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from '../router/withRouter';
+import { withRouter } from '@r/withRouter';
 
 export class EmptyPage extends React.Component {
   constructor(props: any) {

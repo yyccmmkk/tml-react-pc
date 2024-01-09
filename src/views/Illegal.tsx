@@ -1,5 +1,5 @@
 import React from 'react';
-import http from '../http.service';
+import http from '@/http.service';
 
 export class Illegal extends React.Component {
   constructor(props: any) {

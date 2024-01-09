@@ -1,9 +1,9 @@
 import React from 'react';
-import http from '../http.service';
+import http from '@/http.service';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { actions } from '../redux/slices';
-import { withRouter } from '../router/withRouter';
+import { actions } from '@/redux/slices';
+import { withRouter } from '@r/withRouter';
 import { message } from 'antd';
 
 import './styles/home.css';

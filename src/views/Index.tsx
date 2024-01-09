@@ -1,10 +1,10 @@
 import React from 'react';
-import { withRouter } from '../router/withRouter';
+import { withRouter } from '@r/withRouter';
 import { Navigate, useSearchParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions } from '../redux/slices';
-import http from '../http.service';
+import { actions } from '@x/slices';
+import http from '@/http.service';
 //import { message } from 'antd';
 
 const win: any = window;
