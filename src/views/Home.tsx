@@ -1,3 +1,4 @@
+import { css, jsx } from '@emotion/react';
 import React from 'react';
 import http from '@/http.service';
 import { bindActionCreators } from 'redux';
@@ -5,7 +6,6 @@ import { connect } from 'react-redux';
 import { actions } from '@/redux/slices';
 import { withRouter } from '@r/withRouter';
 import { message } from 'antd';
-
 import './styles/home.css';
 
 export class Home extends React.Component {
@@ -63,7 +63,16 @@ export class Home extends React.Component {
     const { title } = this.state;
     return (
       <div className="Home">
-        <h1>home</h1>
+        <h1
+          css={css`
+            font-size: 24px;
+            &:hover {
+              color: #f00;
+            }
+          `}
+        >
+          home2
+        </h1>
       </div>
     );
   }
