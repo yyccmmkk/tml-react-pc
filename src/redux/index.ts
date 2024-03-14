@@ -1,10 +1,9 @@
 import mainReducer from './slices';
 import { configureStore } from '@reduxjs/toolkit';
 import { applyMiddleware, combineReducers } from 'redux';
-import { rootEpic } from '../epics';
+import { rootEpic } from '@/epics';
 import { createEpicMiddleware } from 'redux-observable';
 
-import { createStore } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // def
 
@@ -22,13 +21,13 @@ const persistedReducer = persistReducer(
   combineReducers(reducer)
 );
 
-const preloadedState = {};
+const preloadedState: any = {};
 
 const epicMiddleware = createEpicMiddleware();
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => {
+  middleware: (getDefaultMiddleware): any => {
     const middlewares: any[] = [
       ...getDefaultMiddleware({
         serializableCheck: {
@@ -50,7 +49,8 @@ const store = configureStore({
   },
   devTools: process.env.NODE_ENV !== 'production',
   preloadedState,
-  enhancers: [applyMiddleware(epicMiddleware)],
+  enhancers: (getDefaultEnhancers) =>
+    getDefaultEnhancers().concat([applyMiddleware(epicMiddleware)]),
 });
 epicMiddleware.run(rootEpic);
 

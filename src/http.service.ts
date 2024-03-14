@@ -49,7 +49,7 @@ for (const v of [instance]) {
       const bearer = isCToken ? 'bearer' : 'Bearer';
       //console.log(headers, ' ::headers');
       Object.assign(
-        headers.common,
+        headers,
         !isNoToken
           ? { Authorization: `${bearer} ${isCToken ? token : adminToken}` }
           : {}

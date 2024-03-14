@@ -17,7 +17,7 @@ const { updateAsyncData, updateErrInfo, asyncActionType } = actions;
 
 export const demoEpic = (action$: any, state$: any) =>
   action$.pipe(
-    ofType(asyncActionType),
+    ofType(asyncActionType as any),
     mergeMap((action: any) => {
       const { token } = state$.value.main;
       return _http

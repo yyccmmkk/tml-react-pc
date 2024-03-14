@@ -2,9 +2,9 @@ import { Navigate } from 'react-router-dom';
 import React from 'react';
 import App from '../App';
 import { container as Index } from '../views/Index';
-import { Illegal } from '../views/Illegal';
-import EmptyPage from '../views/Empty';
-import { container as Home } from '../views/Home';
+import { Illegal } from '@/views/Illegal';
+import EmptyPage from '@/views/Empty';
+import { container as Home } from '@/views/Home';
 
 export const routes = [
   {
