@@ -1,5 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires,no-undef
-const path = require('path');
+const path = require('path'); //引入path 要用到他的resolve 方法
+// eslint-disable-next-line no-undef,@typescript-eslint/no-var-requires
+const proxySetting = require(path.resolve(__dirname, './proxy.js'));
 
 // eslint-disable-next-line no-undef
 module.exports = {
@@ -44,24 +46,7 @@ module.exports = {
         },
       },
       proxy: {
-        ['/local']: {
-          target: 'http://192.168.1.255:8888',
-          pathRewrite: { '^/local': '' },
-          changeOrigin: true,
-          secure: false,
-        },
-        ['/test']: {
-          target: 'http://192.168.0.1:6666',
-          pathRewrite: { '^/test': '' },
-          changeOrigin: true,
-          secure: false,
-        },
-        ['/pro']: {
-          target: 'http://127.0.0.1:6666',
-          pathRewrite: { '^/pro': '' },
-          changeOrigin: true,
-          secure: false,
-        },
+        ...proxySetting,
       },
     });
     return devServerConfig;
