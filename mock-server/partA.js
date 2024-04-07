@@ -11,5 +11,14 @@ list.push(
         data: ['张三', '李四', '王五', '刘六', '丁七', '木八', '盛九', '潘十'],
       },
     },
+    {
+      method: 'get',
+      path: '/api/ttt',
+      data: {
+        code: 200,
+        msg: 'success',
+        data: [333888],
+      },
+    },
   ]
 );

@@ -8,16 +8,15 @@ import {
   concatWith,
 } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { _http } from '../http.service';
+import { _http } from '@/http.service';
 import { message } from '../utils';
 
-import { actions } from '../redux/slices';
+import { actions } from '@s/index';
 
 const { updateAsyncData, updateErrInfo, asyncActionType } = actions;
-
 export const demoEpic = (action$: any, state$: any) =>
   action$.pipe(
-    ofType(asyncActionType as any),
+    ofType(asyncActionType().type),
     mergeMap((action: any) => {
       const { token } = state$.value.main;
       return _http

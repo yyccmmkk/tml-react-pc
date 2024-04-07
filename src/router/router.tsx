@@ -5,6 +5,7 @@ import { container as Index } from '../views/Index';
 import { Illegal } from '@/views/Illegal';
 import EmptyPage from '@/views/Empty';
 import { container as Home } from '@/views/Home';
+import { AddListener } from '@/views/demo/AddListener';
 
 export const routes = [
   {
@@ -26,6 +27,16 @@ export const routes = [
       {
         path: 'illegal',
         element: <Illegal />,
+      },
+      {
+        path: 'demo',
+        element: null,
+        children: [
+          {
+            path: 'al',
+            element: <AddListener />,
+          },
+        ],
       },
     ],
   },

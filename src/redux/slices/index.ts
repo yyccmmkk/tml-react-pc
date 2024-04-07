@@ -18,7 +18,7 @@ export const slice = createSlice({
   initialState,
   reducers: {
     asyncActionType: (state) => {
-      console.log(state);
+      //console.log(state);
     },
     updateCode: (state, action) => {
       state.code = action.payload;
