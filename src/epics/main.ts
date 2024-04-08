@@ -1,4 +1,4 @@
-import { of, interval, take, timer } from 'rxjs';
+import { of, interval, take, timer, throwError } from 'rxjs';
 import {
   mergeMap,
   map,
@@ -37,7 +37,7 @@ export const demoEpic = (action$: any, state$: any) =>
           })
         );
     }),
-    catchError(({ message: err }: any) => {
+    catchError((err: any) => {
       message.error(err);
       return of(updateErrInfo(err));
     })
