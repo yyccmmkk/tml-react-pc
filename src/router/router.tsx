@@ -19,7 +19,7 @@ export const routes = [
         element: <Navigate to="/home" />,
       },
       {
-        path: 'index',
+        path: 'home',
         element: <Home />,
       },
       {
@@ -51,7 +51,7 @@ export const routes = [
     ],
   },
   {
-    path: '/home',
+    path: '/index',
     element: <Index />,
   },
   {

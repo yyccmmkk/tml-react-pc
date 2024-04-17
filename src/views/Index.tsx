@@ -38,7 +38,7 @@ export class Home extends React.Component {
     const { isRedirect, isIllegal } = this.state;
     return (
       <div>
-        {isRedirect && <Navigate to="/index" />}
+        {isRedirect && <Navigate to="/home" />}
         {isIllegal && <Navigate to="/illegal" />}
       </div>
     );

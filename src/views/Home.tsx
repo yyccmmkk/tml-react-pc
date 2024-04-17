@@ -19,45 +19,8 @@ export class Home extends React.Component {
   props: any;
   state: any;
 
-  getInfo() {
-    let { code } = this.props.code;
-    code = code || sessionStorage.getItem('token');
-    http
-      .get(`/tangCarController/getRQCode?meetingId=${code}`)
-      .then(({ data: rs }: any) => {
-        const { code, msg, data } = rs;
-        if (code !== 200) {
-          message.error(msg);
-          return;
-        }
-        const {
-          base64,
-          startDateTime,
-          systemCurrentTimeMillis,
-          title,
-          meetingPerson,
-          content: subject,
-          meetingPlace: addr,
-          announcements,
-        } = data;
-        this.setState({
-          base64: `data:image/gif;base64,${base64}`,
-          startDateTime,
-          curTime: systemCurrentTimeMillis,
-        });
-        this.props.updateMeetingInfo({
-          title,
-          subject,
-          participants: meetingPerson,
-          attention: announcements,
-          addr,
-        });
-      });
-  }
-
   componentDidMount(): void {
-    //this.getInfo();
-    setTimeout(this.props.asyncActionType, 3000);
+    //todo
   }
 
   render() {
@@ -72,8 +35,9 @@ export class Home extends React.Component {
             }
           `}
         >
-          home2
+          home
         </h1>
+        <p>支持class 及 hooks 风格</p>
       </div>
     );
   }
