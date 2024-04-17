@@ -6,6 +6,8 @@ import { Illegal } from '@/views/Illegal';
 import EmptyPage from '@/views/Empty';
 import { container as Home } from '@/views/Home';
 import { AddListener } from '@/views/demo/AddListener';
+import HookComponent from '@/views/demo/HookComponent';
+import { container as HookContainer } from '@/views/demo/HookContainer';
 
 export const routes = [
   {
@@ -35,6 +37,14 @@ export const routes = [
           {
             path: 'al',
             element: <AddListener />,
+          },
+          {
+            path: 'hc',
+            element: <HookComponent />,
+          },
+          {
+            path: 'hc/:id',
+            element: <HookContainer />,
           },
         ],
       },

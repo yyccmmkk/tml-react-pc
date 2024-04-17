@@ -1,12 +1,9 @@
 import React from 'react';
-import http from '@/http.service';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { actions } from '@x/slices';
 import { withRouter } from '@r/withRouter';
 import { Navigate, Outlet } from 'react-router-dom';
-
-const isDo = false;
 
 export class Layout extends React.Component {
   constructor(props: any) {
@@ -21,7 +18,6 @@ export class Layout extends React.Component {
 
   componentDidMount(): void {
     //
-    //this.props.asyncActionType();
   }
 
   render() {

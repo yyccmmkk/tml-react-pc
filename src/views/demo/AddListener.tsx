@@ -2,6 +2,7 @@ import React from 'react';
 import '@x/middleware/listener';
 import { store } from '@/redux';
 import { actions } from '@s/index';
+import '@x/middleware/listener';
 export class AddListener extends React.Component {
   constructor(props: any) {
     super(props);

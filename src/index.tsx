@@ -19,7 +19,7 @@ import 'dayjs/locale/zh-cn';
 import 'antd/dist/reset.css';
 
 import 'normalize.css';
-import { routes } from './router/router';
+import { routes } from '@/router';
 import { PersistGate } from 'redux-persist/integration/react';
 
 dayjs.locale('zh-cn');

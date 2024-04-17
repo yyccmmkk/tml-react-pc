@@ -7,7 +7,6 @@ import { actions } from '@/redux/slices';
 import { withRouter } from '@r/withRouter';
 import { message } from 'antd';
 import './styles/home.css';
-import '@x/middleware/listener';
 
 export class Home extends React.Component {
   constructor(props: any) {
