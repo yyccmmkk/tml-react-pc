@@ -3,22 +3,46 @@ const logger = require('koa-logger');
 const Router = require('koa-router');
 const koaBody = require('koa-body');
 const koaStatic = require('koa-static');
-const path = require('path');
+const path = require('node:path');
 const app = new Koa();
 const router = new Router();
-
-require('./normal');
-require('./partA');
-require('./partB');
-require('./partC');
+const fs = require('node:fs');
+const filePath = path.resolve('./response');
+const ignorePathRegExp = /node_modules/;
+const needCheckFileRegExp = /\.js$/;
 
 const list = require('./store');
+
+function main(filePath) {
+  const files = fs.readdirSync(filePath);
+  for (let file of files) {
+    if (ignorePathRegExp.test(file)) {
+      continue;
+    }
+    const _path = path.join(filePath, file);
+    const stat = fs.statSync(_path);
+    if (stat.isFile()) {
+      if (!needCheckFileRegExp.test(_path)) {
+        continue;
+      }
+      const k = require(_path);
+      list.push(...k);
+      console.log(file, k, _path, '999');
+      continue;
+    }
+    if (stat.isDirectory()) {
+      main(_path);
+    }
+  }
+}
+main(filePath);
+console.log(list, 77777);
 
 for (const v of list) {
   if (typeof v === 'string') {
     router.post(v, (ctx, next) => {
       ctx.body = JSON.stringify({
-        code: 0,
+        code: 200,
         msg: 'success',
         data: [],
       });
@@ -34,7 +58,7 @@ for (const v of list) {
           ctx.body = JSON.stringify(
             Object.assign(
               {
-                code: 0,
+                code: 200,
                 msg: 'success',
                 data: [],
               },
