@@ -1,3 +1,5 @@
+import { BehaviorSubject } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import mainReducer from './slices';
 import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit';
 import { applyMiddleware, combineReducers } from 'redux';
@@ -103,7 +105,29 @@ const store = configureStore({
   enhancers: (getDefaultEnhancers) =>
     getDefaultEnhancers().concat([applyMiddleware(epicMiddleware)]),
 });
-epicMiddleware.run(rootEpic);
+const epic$ = new BehaviorSubject(rootEpic);
+// Every time a new epic is given to epic$ it
+// will unsubscribe from the previous one then
+// call and subscribe to the new one because of
+// how switchMap works
+
+const hotReloadingEpic = (...args: any[]) =>
+  epic$.pipe(
+    // @ts-ignore
+    switchMap((epic) => epic(...args))
+  );
+
+epicMiddleware.run(hotReloadingEpic);
+// @ts-ignore
+if (module.hot) {
+  // @ts-ignore
+  module.hot.accept('@/epics', () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const nextRootEpic = require('@/epics').rootEpic;
+    epic$.next(nextRootEpic);
+  });
+}
+
 //
 // The store has been created with these options:
 // - The slice reducers were automatically passed to combineReducers()
