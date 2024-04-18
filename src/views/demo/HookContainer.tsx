@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { actions } from '@s/index';
 import { connect } from 'react-redux';
+import './hookComponent.scss';
 
 export default function HookComponent(props: any) {
   const [title, setTitle] = useState(' hook style component');
@@ -12,7 +13,14 @@ export default function HookComponent(props: any) {
     setTimeout(() => props.updateCode(888888), 3000);
     console.log('路由传参：id =', id, '\n redux:code =', code);
   }, []);
-  return <div>{title}</div>;
+  return (
+    <div>
+      {title}
+      <div className="box">
+        <p>hooks style container</p>
+      </div>
+    </div>
+  );
 }
 
 const mapStateToProps = (state: any) => {

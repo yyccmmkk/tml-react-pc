@@ -21,6 +21,14 @@ export class Home extends React.Component {
 
   componentDidMount(): void {
     //todo
+    http.get('/api/xxx').then(({ data: rs }: any) => {
+      const { code, msg, data } = rs;
+      if (code !== 200) {
+        message.error(msg);
+        return;
+      }
+      // do...
+    });
   }
 
   render() {
@@ -35,9 +43,8 @@ export class Home extends React.Component {
             }
           `}
         >
-          home
+          @emotion/styled
         </h1>
-        <p>支持class 及 hooks 风格</p>
       </div>
     );
   }
