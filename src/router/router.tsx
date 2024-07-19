@@ -8,6 +8,7 @@ import { container as Home } from '@/views/Home';
 import { AddListener } from '@/views/demo/AddListener';
 import HookComponent from '@/views/demo/HookComponent';
 import { container as HookContainer } from '@/views/demo/HookContainer';
+import { TableTest } from '@/views/demo/TableTest';
 
 export const routes = [
   {
@@ -34,6 +35,10 @@ export const routes = [
         path: 'demo',
         element: null,
         children: [
+          {
+            path: 'table',
+            element: <TableTest />,
+          },
           {
             path: 'al',
             element: <AddListener />,

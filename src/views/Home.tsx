@@ -43,8 +43,10 @@ export class Home extends React.Component {
             }
           `}
         >
-          @emotion/styled
+          @emotion/styled222
         </h1>
+        <div>hooks style 组件demo: http://localhost:3000/demo/hc</div>
+        <div>hooks style container demo: http://localhost:3000/demo/hc/111</div>
       </div>
     );
   }
