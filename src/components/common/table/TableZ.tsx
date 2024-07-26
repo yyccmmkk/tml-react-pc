@@ -171,7 +171,7 @@ export default function TableZ(props: TableZ) {
       );
     },
     getCheckboxProps: (record: Item) => ({
-      disabled: record.name === 'disabled', // Column configuration not to be checked
+      disabled: record.name === 'disabled', // Column parameterConfiguration not to be checked
       name: 'name',
     }),
   };

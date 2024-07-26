@@ -26,7 +26,6 @@ export function TabTable(props: T) {
 
   useEffect(() => {
     if (tableList.length > 1) {
-      debugger;
       setTabItems(
         tableList.map((v, i: number) => {
           const { firstPage, tabTitle, fetchData, ...tableProps } = v;

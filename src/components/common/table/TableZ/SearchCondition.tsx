@@ -48,7 +48,7 @@ export function SearchHeader(props: SearchProps) {
 
   const handleFinish = (e: any) => {
     setParams(e);
-    onFinish();
+    onFinish(e);
   };
 
   return (
@@ -67,6 +67,7 @@ export function SearchHeader(props: SearchProps) {
           name,
           label,
           treeData = [],
+          width = 120,
         } = v;
         let ele = null;
         switch (type) {
@@ -77,7 +78,7 @@ export function SearchHeader(props: SearchProps) {
             ele = (
               <Select
                 placeholder="请选择"
-                style={{ minWidth: 120 }}
+                style={{ width: width }}
                 options={options}
                 {...eleProps}
               />
@@ -114,7 +115,7 @@ export function SearchHeader(props: SearchProps) {
         );
       })}
 
-      <Form.Item>
+      <Form.Item style={{ marginLeft: 55 }}>
         <Button style={{ marginRight: 15 }} type="primary" htmlType="submit">
           {searchBtnText}
         </Button>

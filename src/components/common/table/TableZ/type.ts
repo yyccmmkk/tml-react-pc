@@ -17,6 +17,9 @@ export interface TableZ {
   tableList?: TableZProps[];
   tableProps?: TableZProps;
   searchProps?: SearchProps;
+  searchNodes?: ReactNode;
+  children?: ReactNode;
+  ref?: any;
 }
 export type TableZType = TableZ;
 
@@ -43,13 +46,14 @@ export type QueryEle = {
   node?: ReactNode;
   name: string;
   label: string;
+  width?: number;
 };
 
 type BtnItem = {
   node?: ReactNode;
   text?: string;
   props?: { [key: string]: any };
-  handleClick: (p: any) => void | Promise<any>;
+  handleClick?: (p: any) => void | Promise<any>;
 };
 export interface SearchProps extends FormProps {
   searchBtnText?: string;
@@ -65,6 +69,9 @@ export interface TableZProps extends TableProps {
   tabTitle?: string;
   fetchData: FetchZ<any>;
   params?: { [key: string]: number | string };
+  rowSelection?: { [key: string]: any };
+  setPage?: (page: number) => void;
+  setSize?: (page: number) => void;
 }
 export type TableZPropsType = TableZProps;
 
