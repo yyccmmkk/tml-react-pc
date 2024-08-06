@@ -94,11 +94,12 @@ export class QueryCondition extends React.Component {
           let ele = null;
           switch (type) {
             case 'Input':
-              ele = <Input placeholder="请输入" {...eleProps} />;
+              ele = <Input allowClear placeholder="请输入" {...eleProps} />;
               break;
             case 'Select':
               ele = (
                 <Select
+                  allowClear
                   placeholder="请选择"
                   style={{ width: width }}
                   options={options}
@@ -107,28 +108,30 @@ export class QueryCondition extends React.Component {
               );
               break;
             case 'DatePicker':
-              ele = <DatePicker placeholder="请选择" {...eleProps} />;
+              ele = (
+                <DatePicker allowClear placeholder="请选择" {...eleProps} />
+              );
               break;
             case 'RangePicker':
-              ele = <RangePicker {...eleProps} />;
+              ele = <RangePicker allowClear {...eleProps} />;
               break;
             case 'TimePicker':
-              ele = <TimePicker {...eleProps} />;
+              ele = <TimePicker allowClear {...eleProps} />;
               break;
             case 'TimeRangePicker':
-              ele = <TimePicker.RangePicker {...eleProps} />;
+              ele = <TimePicker.RangePicker allowClear {...eleProps} />;
               break;
             case 'Switch':
               ele = <Switch {...eleProps} />;
               break;
             case 'TreeSelect':
-              ele = <TreeSelect treeData={treeData} {...eleProps} />;
+              ele = <TreeSelect allowClear treeData={treeData} {...eleProps} />;
               break;
             case 'Cascader':
-              ele = <Cascader options={options} {...eleProps} />;
+              ele = <Cascader allowClear options={options} {...eleProps} />;
               break;
             default:
-              ele = <Input placeholder="请选择" {...eleProps} />;
+              ele = <Input allowClear placeholder="请选择" {...eleProps} />;
           }
           return (
             <Form.Item key={count++} name={name} label={label}>

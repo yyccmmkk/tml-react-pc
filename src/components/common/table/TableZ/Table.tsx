@@ -37,6 +37,7 @@ export default forwardRef(function TableZ(props: TableZType, ref: any) {
 
   const handleFinish = useCallback((params: Params) => {
     setParams(params);
+    setPage(1);
     handleSearch({ ...params, pageNum: page });
   }, []);
 
