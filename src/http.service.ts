@@ -1,6 +1,6 @@
 import { ajax } from 'rxjs/ajax';
 import { of, race } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+import { delay, map, catchError } from 'rxjs/operators';
 import Cookies from 'js-cookie';
 import { encryption, decrypt } from './utils';
 
@@ -16,6 +16,7 @@ const isEncrypt = process.env.REACT_APP_OPEN_ENCRYPTION === 'true';
 const httpTimeout = 60000;
 
 import axios from 'axios';
+import { message } from '@/utils';
 
 const instance = axios.create({
   baseURL,
@@ -24,6 +25,7 @@ const instance = axios.create({
     'Content-Type': 'application/json;charset=UTF-8',
     //'Content-Type': 'application/x-www-form-urlencoded',
   },
+
   transformRequest: [
     function (data: any = {}, headers: any) {
       //console.log('request::', data);
@@ -41,12 +43,16 @@ for (const v of [instance]) {
   v.interceptors.request.use(
     (config: any) => {
       const { headers } = config;
-      const token = localStorage.getItem('access_token');
+      const token =
+        localStorage.getItem('access_token') ||
+        Cookies.get('cosmosource_token') ||
+        '';
       const adminToken = Cookies.get('Admin-Token') || undefined;
       const isAToken = aTokenRegExp.test(config.url);
       const isCToken = true; //cTokenRegExp.test(config.url);
       const isNoToken = noTokenRegExp.test(config.url);
       const bearer = isCToken ? 'bearer' : 'Bearer';
+      localStorage.setItem('access_token', token);
       //console.log(headers, ' ::headers');
       Object.assign(
         headers,
@@ -71,10 +77,11 @@ for (const v of [instance]) {
       if (isEncrypt) {
         response.data = decrypt(response.data);
       }
-      //console.log(response.data);
       return response;
     },
-    (error: any) => {
+    (error) => {
+      const { status } = error.toJSON();
+      handleError(status);
       return Promise.reject(error);
     }
   );
@@ -139,14 +146,32 @@ class _http {
           Authorization: `bearer ${localStorage.getItem('access_token')}`,
         },
       }).pipe(
-        map((rs) => {
+        map((rs: any) => {
           if (isEncrypt) {
-            return { ...rs, response: decrypt(rs.response as string) };
+            const r = JSON.parse(decrypt(rs.response as string));
+            handleError(r.code);
+            return { ...rs, response: r };
           }
+          handleError(rs.response.code);
           return rs;
+        }),
+        catchError((e: any) => {
+          const { status, message } = e;
+          handleError(status);
+          return of({ response: { code: status, msg: message } });
         })
       )
     );
+  }
+}
+
+function handleError(code: any) {
+  if (process.env.NODE_ENV !== 'production') {
+    +code !== 200 && console.log('status::', code);
+    return;
+  }
+  if (code == 401) {
+    window.location.href = `/cac/login?redirect_url=${window.location.origin}${process.env.REACT_APP_ROUTE_BASE_NAME}`;
   }
 }
 
