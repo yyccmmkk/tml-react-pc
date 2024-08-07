@@ -45,7 +45,7 @@ for (const v of [instance]) {
       const { headers } = config;
       const token =
         localStorage.getItem('access_token') ||
-        Cookies.get('cosmosource_token') ||
+        Cookies.get('access_token') ||
         '';
       const adminToken = Cookies.get('Admin-Token') || undefined;
       const isAToken = aTokenRegExp.test(config.url);
