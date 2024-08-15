@@ -72,6 +72,7 @@ export interface TableZProps extends TableProps {
   rowSelection?: { [key: string]: any };
   setPage?: (page: number) => void;
   setSize?: (page: number) => void;
+  initValues?: { [key: string]: number | string | object };
 }
 export type TableZPropsType = TableZProps;
 

@@ -31,6 +31,7 @@ export class QueryCondition extends React.Component {
       pageSize: 10,
     };
     this.handleFinish = this.handleFinish.bind(this);
+    this.handleReset = this.handleReset.bind(this);
   }
 
   props: any;
@@ -43,6 +44,10 @@ export class QueryCondition extends React.Component {
   setPage(page: number) {
     this.setState({ page });
   }
+
+  setFieldValue(key: string, value: null | string | number) {
+    this.refEle.current?.setFieldValue(key, value);
+  }
   getParams(type: 1 | 2 = 1) {
     const { page, pageSize } = this.state;
     const temp =
@@ -52,9 +57,15 @@ export class QueryCondition extends React.Component {
 
   handleFinish(e: any) {
     const { pageSize, page: pageNum } = this.state;
-    debugger;
     this.setState({ params: e });
     this.props.onFinish({ ...e, pageSize, pageNum });
+  }
+  handleReset() {
+    const { handleReset } = this.props;
+    setTimeout(() => {
+      this.refEle?.current?.submit();
+    }, 10);
+    handleReset && handleReset();
   }
 
   componentDidMount(): void {
@@ -66,7 +77,6 @@ export class QueryCondition extends React.Component {
       onFinish = console.log,
       initialValues,
       searchBtnText = '搜索',
-      handleReset,
       resetBtnText = '重置',
       list = [],
       btnNodes,
@@ -144,7 +154,7 @@ export class QueryCondition extends React.Component {
           <Button style={{ marginRight: 15 }} type="primary" htmlType="submit">
             {searchBtnText}
           </Button>
-          <Button htmlType="reset" onClick={handleReset}>
+          <Button htmlType="reset" onClick={this.handleReset}>
             {resetBtnText}
           </Button>
           <>

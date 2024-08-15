@@ -5,7 +5,14 @@ import { Item, TableZProps } from '@c/common/table/TableZ/type';
 export default function Table1(props: TableZProps) {
   const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);
-  const { fetchData, params, setPage, setSize, ...tableProps } = props;
+  const {
+    fetchData,
+    params,
+    setPage,
+    setSize,
+    initValues = {},
+    ...tableProps
+  } = props;
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: Item[]) => {
       console.log(
@@ -45,6 +52,7 @@ export default function Table1(props: TableZProps) {
   useEffect(() => {
     setLoading(true);
     fetchData({
+      ...initValues,
       ...params,
       pageNum: 1,
       pageSize: (tableProps.pagination && tableProps.pagination.pageSize) || 10,

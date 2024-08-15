@@ -66,6 +66,7 @@ export default forwardRef(function TableZ(props: TableZType, ref: any) {
           setSize={setSize}
           setPage={setPage}
           params={params}
+          initValues={searchProps.initialValues}
           {...tableProps}
         />
       )}
