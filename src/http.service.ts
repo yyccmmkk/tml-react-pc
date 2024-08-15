@@ -43,10 +43,7 @@ for (const v of [instance]) {
   v.interceptors.request.use(
     (config: any) => {
       const { headers } = config;
-      const token =
-        localStorage.getItem('access_token') ||
-        Cookies.get('access_token') ||
-        '';
+      const token = localStorage.getItem('access_token') || '';
       const adminToken = Cookies.get('Admin-Token') || undefined;
       const isAToken = aTokenRegExp.test(config.url);
       const isCToken = true; //cTokenRegExp.test(config.url);
@@ -125,10 +122,9 @@ class _http {
     _http.interceptors.beforeRequest(_http.cache.request);
     let params = '';
     if (method === 'GET' && typeof data === 'object' && data !== null) {
-      params = Object.entries(data).reduce(
-        (acc, cur) => acc + cur.join('='),
-        ''
-      );
+      params = Object.entries(data)
+        .map((v) => v.join('='))
+        .join('&');
     }
     return race(
       of({
@@ -148,7 +144,7 @@ class _http {
       }).pipe(
         map((rs: any) => {
           if (isEncrypt) {
-            const r = JSON.parse(decrypt(rs.response as string));
+            const r = decrypt(rs.response as string);
             handleError(r.code);
             return { ...rs, response: r };
           }
