@@ -5,10 +5,13 @@ import { container as Index } from '../views/Index';
 import { Illegal } from '@/views/Illegal';
 import EmptyPage from '@/views/Empty';
 import { container as Home } from '@/views/Home';
+import { container as ErrorBoundary } from '@/views/ErrorBoundary';
 import { AddListener } from '@/views/demo/AddListener';
 import HookComponent from '@/views/demo/HookComponent';
 import { container as HookContainer } from '@/views/demo/HookContainer';
 import { TableTest } from '@/views/demo/TableTest';
+// @ts-ignore
+import FourZeroFour from '@/views/FourZeroFour';
 
 export const routes = [
   {
@@ -32,6 +35,11 @@ export const routes = [
         element: <Illegal />,
       },
       {
+        path: '404',
+        element: <FourZeroFour />,
+        handle: { title: '404' },
+      },
+      {
         path: 'demo',
         element: null,
         children: [
@@ -53,7 +61,7 @@ export const routes = [
           },
         ],
       },
-    ],
+    ].map((v) => ({ ...v, errorElement: <ErrorBoundary /> })),
   },
   {
     path: '/index',
