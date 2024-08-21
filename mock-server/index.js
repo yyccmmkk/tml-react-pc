@@ -27,7 +27,6 @@ function main(filePath) {
       }
       const k = require(_path);
       list.push(...k);
-      console.log(file, k, _path, '999');
       continue;
     }
     if (stat.isDirectory()) {
@@ -36,11 +35,17 @@ function main(filePath) {
   }
 }
 main(filePath);
-console.log(list, 77777);
 
 for (const v of list) {
   if (typeof v === 'string') {
-    router.post(v, (ctx, next) => {
+    const r = v.split(/\s+/);
+    let type = 'post';
+    let url = v;
+    if (r.length > 1) {
+      type = r[0].toLowerCase();
+      url = r[1];
+    }
+    router[type](url, (ctx, next) => {
       ctx.body = JSON.stringify({
         code: 200,
         msg: 'success',
@@ -50,11 +55,12 @@ for (const v of list) {
     continue;
   }
   const { method = 'post', path, data, callback } = v;
-  router[method](
+  router[method.toLowerCase()](
     path,
     callback
       ? callback.bind(this)
       : (ctx, next) => {
+          ctx.status = 200;
           ctx.body = JSON.stringify(
             Object.assign(
               {
@@ -62,7 +68,7 @@ for (const v of list) {
                 msg: 'success',
                 data: [],
               },
-              typeof data === 'function' ? data() : data
+              typeof data === 'function' ? data(ctx) : data
             )
           );
         }
@@ -89,6 +95,14 @@ app.use(
     formidable: {
       uploadDir: __dirname + '/public',
       hash: 'md5',
+      onFileBegin: function (name, file) {
+        // 重命名文件
+        const ext = path.extname(file.name);
+        const basename = path.basename(file.name, ext);
+        const newName = `${basename}_${Date.now()}${ext}`;
+        file.path = path.join(this.uploadDir, newName); // 设置新文件路径
+        file.name = newName; // 设置新文件名
+      },
     },
   })
 );
